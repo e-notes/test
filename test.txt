@@ -4,6 +4,8 @@ abstract is abstract
 
 this text is added on feature/nogami branch
 
+add something....
+
 [detail]
 A
 B
