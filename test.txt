@@ -2,6 +2,7 @@ this is test file.
 [abstract]
 abstract is abstract 
 
+this text is added on feature/nogami branch
 
 [detail]
 A
