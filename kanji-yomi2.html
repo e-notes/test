@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>1年生の漢字よみ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Klee+One:wght@600&family=Zen+Maru+Gothic:wght@500;700&display=swap" rel="stylesheet">
+<style>
+/*
+VOICE: やさしく、明るく、子どもが一人でも押せる
+IDEA: 国語の漢字練習ノート（田の字マス）
+PICTURE: 大きなマスに教科書体の漢字一字
+COLOUR and TYPE: ノートの緑地 + 白い紙 + 赤えんぴつ / Klee One + Zen Maru Gothic
+LAYOUT: 上に進み具合、中央に大きなマス、下に大きなボタン、最後に80字の一覧
+*/
+:root{color-scheme:light dark;
+--bg:light-dark(#2f7d5b,#123326);--paper:light-dark(#fffdf6,#1d2522);--ink:light-dark(#1f2a25,#eef3ef);
+--sub:light-dark(#5d6b64,#a9b8b0);--grid:light-dark(#e3a3a3,#7a4a4a);--red:light-dark(#d23a2f,#ff7a6b);
+--blue:light-dark(#2a64c8,#7fb0ff);--line:light-dark(#e8e2d2,#33403a);--on:#fff}
+:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 "Zen Maru Gothic",system-ui,sans-serif;overflow-x:clip}
+.wrap{max-width:760px;margin:0 auto;padding:clamp(16px,4vw,40px) max(4vw,14px)}
+.paper{background:var(--paper);border-radius:18px;padding:clamp(16px,3.5vw,32px);box-shadow:0 10px 0 rgba(0,0,0,.18)}
+header{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:6px 16px;margin-bottom:14px}
+h1{margin:0;font-size:clamp(24px,5vw,32px);line-height:1.1;color:var(--on)}
+.stat{color:var(--on);opacity:.9;font-size:15px}
+.bar{height:12px;background:var(--line);border-radius:6px;overflow:hidden;margin:4px 0 6px}
+.bar i{display:block;height:100%;background:var(--red);border-radius:6px;transition:width .3s}
+.row{display:flex;justify-content:space-between;font-size:14px;color:var(--sub)}
+.stage{display:grid;place-items:center;gap:14px;margin-top:14px}
+.masu{position:relative;width:min(300px,72vw);aspect-ratio:1;border:3px solid var(--grid);background:var(--paper)}
+.masu::before,.masu::after{content:"";position:absolute;border:0 dashed var(--grid)}
+.masu::before{left:50%;top:0;bottom:0;border-left-width:2px}
+.masu::after{top:50%;left:0;right:0;border-top-width:2px}
+.kanji{position:absolute;inset:0;display:grid;place-items:center;font:600 min(220px,54vw)/1 "Klee One",serif;z-index:1}
+.yomi{min-height:2.6em;text-align:center;font-size:clamp(22px,5.5vw,30px);font-weight:700;color:var(--blue);line-height:1.3;text-wrap:balance}
+.yomi.hide{visibility:hidden}
+.btns{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;width:100%}
+button{font:700 20px "Zen Maru Gothic",sans-serif;min-height:60px;padding:0 26px;border-radius:14px;border:0;cursor:pointer;color:#fff;box-shadow:0 5px 0 rgba(0,0,0,.25)}
+button:active{transform:translateY(3px);box-shadow:0 2px 0 rgba(0,0,0,.25)}
+button:focus-visible{outline:3px solid var(--blue);outline-offset:3px}
+.show{background:var(--blue);min-width:min(320px,100%)}
+.ok{background:#2f9e5a;flex:1;max-width:220px}
+.ng{background:var(--red);flex:1;max-width:220px}
+.ghost{background:transparent;color:var(--sub);box-shadow:none;font-size:15px;min-height:44px;padding:0 12px;border:2px solid var(--line)}
+.hidden{display:none!important}
+.done{text-align:center;padding:20px 0}
+.done b{display:block;font-size:clamp(28px,6vw,40px);color:var(--red);line-height:1.2;margin-bottom:8px}
+.list{margin-top:22px;border-top:2px dashed var(--line);padding-top:14px}
+.list h2{font-size:17px;margin:0 0 8px}
+.cells{display:grid;grid-template-columns:repeat(auto-fill,minmax(40px,1fr));gap:5px}
+.cells span{aspect-ratio:1;display:grid;place-items:center;font:600 22px "Klee One",serif;border:1.5px solid var(--line);border-radius:6px;color:var(--sub)}
+.cells span.m{background:#2f9e5a;color:#fff;border-color:#2f9e5a}
+.cells span.w{border-color:var(--red);color:var(--red)}
+.foot{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;margin-top:14px;font-size:13px;color:var(--sub)}
+.sync{margin-top:18px;border-top:2px dashed var(--line);padding-top:14px}
+.sync h2{font-size:17px;margin:0 0 4px}.sync p{margin:0 0 10px;font-size:14px;color:var(--sub)}
+.code{display:flex;gap:8px;margin-bottom:8px}
+.code input{flex:1;font:16px ui-monospace,Menlo,monospace;min-height:48px;padding:0 12px;border:2px solid var(--line);border-radius:10px;background:var(--paper);color:var(--ink)}
+.code input:focus-visible{outline:3px solid var(--blue);outline-offset:1px}
+.code button{font-size:16px;min-height:48px;padding:0 16px;background:var(--blue);white-space:nowrap}
+#msg{min-height:1.5em;font-weight:700}#msg.err{color:var(--red)}#msg.ok{color:#2f9e5a}
+.dlg{position:fixed;inset:0;background:rgba(0,0,0,.45);display:grid;place-items:center;padding:16px;z-index:9}
+.dlg>div{background:var(--paper);border-radius:16px;padding:22px;max-width:360px;text-align:center}
+.dlg .btns{margin-top:14px}
+@media(prefers-reduced-motion:reduce){.bar i{transition:none}}
+@keyframes pop{from{transform:scale(.85);opacity:0}to{transform:none;opacity:1}}
+.kanji.pop{animation:pop .25s ease-out}
+@media(prefers-reduced-motion:reduce){.kanji.pop{animation:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header><h1>1ねんせいの かんじ よみ</h1><span class="stat" id="stat"></span></header>
+<div class="paper">
+  <div class="bar"><i id="pb"></i></div>
+  <div class="row"><span id="rnd"></span><span id="cnt"></span></div>
+
+  <div id="play" class="stage">
+    <div class="masu"><div class="kanji" id="kj"></div></div>
+    <div class="yomi hide" id="ym">　</div>
+    <div class="btns">
+      <button class="show" id="bShow">よみを みる</button>
+      <button class="ok hidden" id="bOk">○ せいかい</button>
+      <button class="ng hidden" id="bNg">✕ ふせいかい</button>
+    </div>
+    <button class="ghost hidden" id="bAgain">もういちど きく</button>
+  </div>
+
+  <div id="end" class="done hidden">
+    <b id="endT"></b>
+    <p id="endP"></p>
+    <div class="btns"><button class="show" id="bNext">つぎの がくしゅう</button></div>
+  </div>
+
+  <div class="list">
+    <h2>80じ いちらん</h2>
+    <div class="cells" id="cells"></div>
+    <div class="foot">
+      <span>みどり＝おぼえた　あか＝こんかい まちがえた</span>
+      <button class="ghost" id="bReset">はじめから やりなおす</button>
+    </div>
+    <p class="foot" id="note" style="margin-top:6px"></p>
+  </div>
+
+  <div class="sync">
+    <h2>ひきつぎコード</h2>
+    <p>べつの ブラウザや たんまつで つづけるときは、このコードを うつして「よみこむ」を おしてください。</p>
+    <div class="code"><input id="myCode" readonly aria-label="いまの きろくの コード"><button id="bCopy">コピー</button></div>
+    <div class="code"><input id="inCode" placeholder="ここに コードを はりつけ" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="よみこむ コード"><button id="bLoad">よみこむ</button></div>
+    <p id="msg"></p>
+  </div>
+</div>
+</div>
+
+<div class="dlg hidden" id="dlg"><div>
+  <p id="dT"></p>
+  <div class="btns"><button class="ng" id="dYes"></button><button class="ghost" id="dNo">やめる</button></div>
+</div></div>
+
+<script>
+{
+const RAW=`一:いち・ひとつ|右:みぎ・う・ゆう|雨:あめ・う|円:えん・まるい|王:おう|音:おと・おん・ね|下:した・か・げ・さがる・くだる|火:ひ・か|花:はな・か|貝:かい|学:がく・まなぶ|気:き・け|九:きゅう・く・ここのつ|休:やすむ・きゅう|玉:たま・ぎょく|金:きん・かね・こん|空:そら・くう・あく・から|月:つき・げつ・がつ|犬:いぬ・けん|見:みる・けん|五:ご・いつつ|口:くち・こう|校:こう|左:ひだり・さ|三:さん・みっつ|山:やま・さん|子:こ・し|四:し・よん・よっつ|糸:いと・し|字:じ|耳:みみ・じ|七:しち・なな・ななつ|車:くるま・しゃ|手:て・しゅ|十:じゅう・とお|出:でる・だす・しゅつ|女:おんな・じょ|小:ちいさい・しょう・こ|上:うえ・じょう・あがる・のぼる|森:もり・しん|人:ひと・じん・にん|水:みず・すい|正:ただしい・せい・しょう|生:いきる・うまれる・せい・なま|青:あお・せい|夕:ゆう|石:いし・せき|赤:あか・せき|千:せん・ち|川:かわ・せん|先:さき・せん|早:はやい・そう|草:くさ・そう|足:あし・そく・たりる|村:むら・そん|大:おおきい・だい・たい|男:おとこ・だん・なん|竹:たけ・ちく|中:なか・ちゅう|虫:むし・ちゅう|町:まち・ちょう|天:てん・あま|田:た・でん|土:つち・ど|二:に・ふたつ|日:ひ・にち・か|入:いる・はいる・にゅう|年:とし・ねん|白:しろ・はく|八:はち・やっつ|百:ひゃく|文:ぶん・もん・ふみ|木:き・もく|本:ほん・もと|名:な・めい・みょう|目:め・もく|立:たつ・りつ|力:ちから・りょく・りき|林:はやし・りん|六:ろく・むっつ`;
+const K=RAW.split('|').map(s=>{const [k,y]=s.split(':');return{k,y}});
+const Y=Object.fromEntries(K.map(o=>[o.k,o.y]));
+const KEY='kanji1-v1';
+const $=id=>document.getElementById(id);
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+
+let S=null;
+try{S=JSON.parse(localStorage.getItem(KEY))}catch(e){}
+if(!S||!Array.isArray(S.queue))S={mastered:[],queue:[],pos:0,wrong:[],round:0};
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
+
+function newRound(){
+  const rest=K.map(o=>o.k).filter(k=>!S.mastered.includes(k));
+  if(!rest.length){S.mastered=[];return newRound()}
+  S.queue=shuffle(rest);S.pos=0;S.wrong=[];S.round=(S.round||0)+1;save();
+}
+if(!S.queue.length)newRound();
+
+let voice=null;
+const pickVoice=()=>{try{const v=speechSynthesis.getVoices();voice=v.find(x=>/^ja/i.test(x.lang))||null}catch(e){}};
+if('speechSynthesis' in window){pickVoice();speechSynthesis.onvoiceschanged=pickVoice}
+else $('note').textContent='このブラウザは おんせい に たいおう していません。';
+function speak(text){
+  try{
+    speechSynthesis.cancel();
+    const u=new SpeechSynthesisUtterance(text.replace(/・/g,'、'));
+    u.lang='ja-JP';u.rate=.8;if(voice)u.voice=voice;
+    speechSynthesis.speak(u);
+  }catch(e){}
+}
+
+function renderCells(){
+  $('cells').innerHTML=K.map(o=>`<span class="${S.mastered.includes(o.k)?'m':S.wrong.includes(o.k)?'w':''}">${o.k}</span>`).join('');
+  $('stat').textContent=`おぼえた ${S.mastered.length} / 80`;
+  $('myCode').value=encode();
+}
+
+// 引き継ぎコード: 1字2ビット(0=前回までに正解 1=今回未出題 2=今回正解 3=今回不正解)+回数+チェック
+const sum=b=>b.reduce((a,v,i)=>(a+v*(i+1))%256,0);
+function encode(){
+  const b=new Uint8Array(22);
+  K.forEach((o,i)=>{
+    const q=S.queue.indexOf(o.k);
+    const s=q<0?0:q>=S.pos?1:S.wrong.includes(o.k)?3:2;
+    b[i>>2]|=s<<((i&3)*2);
+  });
+  b[20]=Math.min(S.round||1,255);b[21]=sum(b.slice(0,21));
+  return 'K1-'+btoa(String.fromCharCode(...b)).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+}
+function decode(str){
+  str=(str||'').trim().replace(/\s+/g,'');
+  if(!/^K1-[A-Za-z0-9_-]{30}$/.test(str))return null;
+  let bin;try{bin=atob(str.slice(3).replace(/-/g,'+').replace(/_/g,'/'))}catch(e){return null}
+  const b=Uint8Array.from(bin,c=>c.charCodeAt(0));
+  if(b.length!==22||sum(b.slice(0,21))!==b[21])return null;
+  const m=[],w=[],seen=[],un=[];
+  K.forEach((o,i)=>{
+    const s=(b[i>>2]>>((i&3)*2))&3;
+    if(s===0||s===2)m.push(o.k);
+    if(s===3)w.push(o.k);
+    if(s>=2)seen.push(o.k);else if(s===1)un.push(o.k);
+  });
+  return{mastered:m,wrong:w,queue:seen.concat(shuffle(un)),pos:seen.length,round:b[20]||1};
+}
+let onYes=null;
+function ask(text,yes,fn){$('dT').textContent=text;$('dYes').textContent=yes;onYes=fn;$('dlg').classList.remove('hidden')}
+const say=(t,c)=>{const m=$('msg');m.textContent=t;m.className=c||''};
+function render(){
+  const n=S.queue.length,p=S.pos;
+  $('pb').style.width=(n?p/n*100:0)+'%';
+  $('rnd').textContent=`${S.round}かいめ`;
+  $('cnt').textContent=`${Math.min(p+1,n)} / ${n}`;
+  renderCells();
+  if(p>=n){
+    $('play').classList.add('hidden');$('end').classList.remove('hidden');
+    const ok=n-S.wrong.length,left=80-S.mastered.length;
+    $('endT').textContent=left?'おつかれさま！':'80じ ぜんぶ おぼえた！';
+    $('endP').textContent=left?`こんかい ${ok}じ せいかい。つぎは のこりの ${left}じ を れんしゅう します。`:'すごい！ つぎは 80じ ぜんぶ から もういちど はじめます。';
+    $('bNext').textContent=left?'つぎの がくしゅう':'もういちど 80じ';
+    return;
+  }
+  $('play').classList.remove('hidden');$('end').classList.add('hidden');
+  const kj=$('kj');kj.textContent=S.queue[p];kj.classList.remove('pop');void kj.offsetWidth;kj.classList.add('pop');
+  $('ym').textContent='　';$('ym').classList.add('hide');
+  $('bShow').classList.remove('hidden');
+  ['bOk','bNg','bAgain'].forEach(i=>$(i).classList.add('hidden'));
+  $('bShow').focus({preventScroll:true});
+}
+function reveal(){
+  const k=S.queue[S.pos],y=Y[k];
+  $('ym').textContent=y;$('ym').classList.remove('hide');
+  $('bShow').classList.add('hidden');
+  ['bOk','bNg','bAgain'].forEach(i=>$(i).classList.remove('hidden'));
+  speak(y);
+}
+function answer(ok){
+  const k=S.queue[S.pos];
+  if(ok){if(!S.mastered.includes(k))S.mastered.push(k)}
+  else if(!S.wrong.includes(k))S.wrong.push(k);
+  S.pos++;save();render();
+}
+
+$('bShow').onclick=reveal;
+$('bAgain').onclick=()=>speak(Y[S.queue[S.pos]]);
+$('bOk').onclick=()=>answer(true);
+$('bNg').onclick=()=>answer(false);
+$('bNext').onclick=()=>{newRound();render()};
+$('bReset').onclick=()=>ask('おぼえた かんじの きろくを けして、80じ ぜんぶ から やりなおしますか？','けす',()=>{S={mastered:[],queue:[],pos:0,wrong:[],round:0};newRound();render();say('')});
+$('dNo').onclick=()=>$('dlg').classList.add('hidden');
+$('dYes').onclick=()=>{$('dlg').classList.add('hidden');if(onYes)onYes()};
+$('bCopy').onclick=async()=>{
+  const el=$('myCode');
+  try{await navigator.clipboard.writeText(el.value);say('コピーしました。','ok')}
+  catch(e){el.focus();el.select();el.setSelectionRange(0,999);say('コードを えらびました。ながおしで コピーしてください。')}
+};
+$('myCode').onfocus=e=>e.target.select();
+$('bLoad').onclick=()=>{
+  const d=decode($('inCode').value);
+  if(!d){say('コードが ただしく ありません。もういちど たしかめてください。','err');return}
+  ask(`いまの きろくを このコードの きろく（おぼえた ${d.mastered.length}じ・${d.round}かいめ）に おきかえますか？`,'よみこむ',()=>{
+    S=d;if(!S.queue.length)newRound();save();render();$('inCode').value='';say('よみこみました。つづきから はじめます。','ok');
+  });
+};
+document.addEventListener('keydown',e=>{
+  if(e.target.tagName==='INPUT'||!$('dlg').classList.contains('hidden')||S.pos>=S.queue.length)return;
+  const shown=$('bShow').classList.contains('hidden');
+  if(!shown&&(e.key===' '||e.key==='Enter')){e.preventDefault();reveal()}
+  else if(shown&&(e.key==='o'||e.key==='ArrowLeft'))answer(true);
+  else if(shown&&(e.key==='x'||e.key==='ArrowRight'))answer(false);
+});
+render();
+}
+</script>
+</body>
+</html>
